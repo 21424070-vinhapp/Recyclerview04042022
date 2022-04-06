@@ -1,20 +1,23 @@
 package com.example.recyclerview04042022;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 public class FoodModel {
     private int image;
     private String name;
     private String address;
-    private ArrayList<ServiceEnum> arrServiceEnum;
+    private List<ServiceEnum> arrServiceEnum;
     private Discount discount;
-    private Date timeOpen;
-    private Date timeClose;
+    private long timeOpen;
+    private long timeClose;
     private float distance;
     private boolean isOpen;
 
-    public FoodModel(int image, String name, String address, ArrayList<ServiceEnum> arrServiceEnum, Discount discount, Date timeOpen, Date timeClose, float distance) {
+
+    public FoodModel(int image, String name, String address, List<ServiceEnum> arrServiceEnum, Discount discount, long timeOpen, long timeClose, float distance, boolean isOpen) {
         this.image = image;
         this.name = name;
         this.address = address;
@@ -23,6 +26,7 @@ public class FoodModel {
         this.timeOpen = timeOpen;
         this.timeClose = timeClose;
         this.distance = distance;
+        this.isOpen = isOpen;
     }
 
     public int getImage() {
@@ -49,11 +53,11 @@ public class FoodModel {
         this.address = address;
     }
 
-    public ArrayList<ServiceEnum> getArrServiceEnum() {
+    public List<ServiceEnum> getArrServiceEnum() {
         return arrServiceEnum;
     }
 
-    public void setArrServiceEnum(ArrayList<ServiceEnum> arrServiceEnum) {
+    public void setArrServiceEnum(List<ServiceEnum> arrServiceEnum) {
         this.arrServiceEnum = arrServiceEnum;
     }
 
@@ -65,19 +69,19 @@ public class FoodModel {
         this.discount = discount;
     }
 
-    public Date getTimeOpen() {
+    public long getTimeOpen() {
         return timeOpen;
     }
 
-    public void setTimeOpen(Date timeOpen) {
+    public void setTimeOpen(long timeOpen) {
         this.timeOpen = timeOpen;
     }
 
-    public Date getTimeClose() {
+    public long getTimeClose() {
         return timeClose;
     }
 
-    public void setTimeClose(Date timeClose) {
+    public void setTimeClose(long timeClose) {
         this.timeClose = timeClose;
     }
 
@@ -95,5 +99,27 @@ public class FoodModel {
 
     public void setOpen(boolean open) {
         isOpen = open;
+    }
+
+    @Override
+    public String toString() {
+        return "FoodModel{" +
+                "image=" + image +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", arrServiceEnum=" + arrServiceEnum +
+                ", discount=" + discount +
+                ", timeOpen=" + timeOpen +
+                ", timeClose=" + timeClose +
+                ", distance=" + distance +
+                ", isOpen=" + isOpen +
+                '}';
+    }
+
+    public static List<FoodModel> getMock()
+    {
+        return new ArrayList<>(Arrays.asList(
+                new FoodModel(R.drawable.image_flycupcake,"Anzi - Cơm Trưa Văn Phòng","2/15 Quách Văn Tuấn, P. 12, Tân Bình, TP. HCM",Arrays.asList(ServiceEnum.RESTAURANT,ServiceEnum.BIRTHDAY),new Discount(DiscountSessionEnum.ALL_TIME,"Giảm 20%"),Ultils.getTime(7,0,0),Ultils.getTime(22,0,0),13,true)
+        ));
     }
 }
