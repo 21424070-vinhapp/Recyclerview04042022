@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder> {
+public class FoodAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     List<FoodModel> listFood;
     private OnItemClickListener onItemClickListener;
@@ -30,22 +30,37 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
     //ham tra ve TYPE nao
     @Override
     public int getItemViewType(int position) {
-        return super.getItemViewType(position);
+        if(isLoading==true)
+        {
+            if(position==(listFood.size()-1)){
+                return ITEM_LOADING;
+            }
+        }
+        return ITEM_TYPE;
     }
 
     @NonNull
     @Override
-    public FoodViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         //LayoutInflater thay doi giao dien, chuyen cau truc giao dien
         LayoutInflater layoutInflater=LayoutInflater.from(parent.getContext());
-        View view=layoutInflater.inflate(R.layout.item_food,parent,false);
-        return new FoodViewHolder(view);
+        View view;
+        if(viewType==ITEM_TYPE)
+        {
+            view=layoutInflater.inflate(R.layout.item_food,parent,false);
+            return new FoodViewHolder(view);
+        }
+        else
+        {
+            view=layoutInflater.inflate(R.layout.item_loading,parent,false);
+            return new LoadingViewHolder(view);
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FoodViewHolder holder, int position) {
-        FoodModel foodModel=listFood.get(position);
-        holder.bind(foodModel);
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        /*FoodModel foodModel=listFood.get(position);
+        holder.bind(foodModel);*/
     }
 
     @Override
@@ -133,5 +148,12 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
     public void addLoading(){
         isLoading=true;
         listFood.add(null);
+    }
+
+    public void removeLoading(){
+        isLoading=false;
+        int position=listFood.size()-1;
+        listFood.remove(position);
+        notifyItemRemoved(position);
     }
 }
