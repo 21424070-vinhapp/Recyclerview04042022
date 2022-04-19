@@ -59,8 +59,11 @@ public class FoodAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        /*FoodModel foodModel=listFood.get(position);
-        holder.bind(foodModel);*/
+        if(holder instanceof FoodViewHolder)
+        {
+            FoodModel foodModel=listFood.get(position);
+            ((FoodViewHolder)holder).bind(foodModel);
+        }
     }
 
     @Override
