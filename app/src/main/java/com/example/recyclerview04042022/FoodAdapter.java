@@ -1,6 +1,7 @@
 package com.example.recyclerview04042022;
 
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +16,21 @@ import java.util.List;
 public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder> {
 
     List<FoodModel> listFood;
+    private OnItemClickListener onItemClickListener;
+
+    private int ITEM_TYPE=1;
+    private int ITEM_LOADING=0;
+    private boolean isLoading=false;
 
     public FoodAdapter(List<FoodModel> listFood)
     {
         this.listFood=listFood;
+    }
+
+    //ham tra ve TYPE nao
+    @Override
+    public int getItemViewType(int position) {
+        return super.getItemViewType(position);
     }
 
     @NonNull
@@ -32,7 +44,8 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull FoodViewHolder holder, int position) {
-
+        FoodModel foodModel=listFood.get(position);
+        holder.bind(foodModel);
     }
 
     @Override
@@ -57,6 +70,18 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
             txtService=itemView.findViewById(R.id.textViewService);
             txtDiscount=itemView.findViewById(R.id.textViewDiscount);
             txtDistance=itemView.findViewById(R.id.textViewDistance);
+            txtOpen=itemView.findViewById(R.id.textViewOpen);
+
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(onItemClickListener!=null)
+                    {
+                        onItemClickListener.onCLick(getAdapterPosition());
+                    }
+                }
+            });
 
         }
 
@@ -67,7 +92,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
             txtAddress.setText(foodModel.getAddress());
             String service="";
             for (ServiceEnum item:foodModel.getArrServiceEnum()) {
-                service+=item.toString()+"/";
+                service += item.toString()+"/";
             }
             txtService.setText(service.substring(0,service.length()-1));
             String textDiscount="";
@@ -81,11 +106,32 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
                     textDiscount = "<font color=#A9DAF1>"+foodModel.getDiscount().getDiscountSessionEnum().toString() +"</font> <font color=#F9C29A>"+foodModel.getDiscount().getNameDiscount()+"</font>";
                 case NOON:
                     textDiscount = "<font color=#A9DAF1>"+foodModel.getDiscount().getDiscountSessionEnum().toString() +"</font> <font color=#F9C29A>"+foodModel.getDiscount().getNameDiscount()+"</font>";
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + foodModel.getDiscount().getDiscountSessionEnum());
             }
             txtDiscount.setText(Html.fromHtml(textDiscount));
             txtDistance.setText(foodModel.getDistance()+ " km");
-            img.setImageResource(foodModel.getImage());
-
+            txtOpen.setText("");
         }
+
+
+    }
+
+    class LoadingViewHolder extends RecyclerView.ViewHolder{
+
+        public LoadingViewHolder(@NonNull View itemView) {
+            super(itemView);
+        }
+    }
+
+    public void setOnItemClickListener (OnItemClickListener onItemClickListener)
+    {
+        this.onItemClickListener=onItemClickListener;
+    }
+
+    public void addLoading(){
+        isLoading=true;
+        listFood.add(null);
     }
 }
