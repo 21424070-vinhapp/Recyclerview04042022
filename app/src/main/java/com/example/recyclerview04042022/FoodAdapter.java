@@ -1,7 +1,6 @@
 package com.example.recyclerview04042022;
 
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 public class FoodAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -18,8 +19,8 @@ public class FoodAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     List<FoodModel> listFood;
     private OnItemClickListener onItemClickListener;
 
-    private int ITEM_TYPE=1;
-    private int ITEM_LOADING=0;
+    private final int ITEM_TYPE=1;
+    private final int ITEM_LOADING=0;
     private boolean isLoading=false;
 
     public FoodAdapter(List<FoodModel> listFood)
@@ -79,6 +80,10 @@ public class FoodAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         ImageView img;
         TextView txtOpen,txtName,txtAddress,txtService,txtDiscount,txtDistance;
+        Calendar calendar;
+        long currentTime;
+        SimpleDateFormat simpleDateFormat;
+        String textDiscount="";
         public FoodViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -89,7 +94,9 @@ public class FoodAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             txtDiscount=itemView.findViewById(R.id.textViewDiscount);
             txtDistance=itemView.findViewById(R.id.textViewDistance);
             txtOpen=itemView.findViewById(R.id.textViewOpen);
-
+            calendar=Calendar.getInstance();
+            currentTime=calendar.getTimeInMillis();
+            simpleDateFormat=new SimpleDateFormat("HH:mm");
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -113,7 +120,7 @@ public class FoodAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 service += item.toString()+"/";
             }
             txtService.setText(service.substring(0,service.length()-1));
-            String textDiscount="";
+
             switch (foodModel.getDiscount().getDiscountSessionEnum())
             {
                 case ALL_TIME:
@@ -130,7 +137,16 @@ public class FoodAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
             txtDiscount.setText(Html.fromHtml(textDiscount));
             txtDistance.setText(foodModel.getDistance()+ " km");
-            txtOpen.setText("");
+
+
+            if(currentTime>= foodModel.getTimeOpen() && currentTime<foodModel.getTimeClose())
+            {
+                txtOpen.setVisibility(View.GONE);
+                return;
+            }
+            txtOpen.setVisibility(View.VISIBLE);
+
+            txtOpen.setText("Đóng cửa \n Đặt bàn vào lúc "+ simpleDateFormat.format(foodModel.getTimeOpen()));
         }
 
 
